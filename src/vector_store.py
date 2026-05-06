@@ -3,7 +3,7 @@ from typing import List, Dict
 
 import chromadb
 from dotenv import load_dotenv
-from openai import OpenAI
+from llm import get_embedding
 
 from ingest import load_documents, create_chunks
 
@@ -14,8 +14,6 @@ EMBEDDING_MODEL = "text-embedding-3-small"
 
 
 load_dotenv()
-openai_client = OpenAI()
-
 
 def get_embedding(text: str) -> List[float]:
     """

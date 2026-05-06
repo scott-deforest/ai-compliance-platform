@@ -1,15 +1,12 @@
 from typing import List, Dict
 
-from openai import OpenAI
 from dotenv import load_dotenv
 
 from vector_store import search_policy_documents
+from llm import get_chat_completion
 
 
 load_dotenv()
-client = OpenAI()
-
-CHAT_MODEL = "gpt-4o-mini"
 
 
 def format_context(matches: List[Dict]) -> str:
@@ -47,22 +44,18 @@ User Question:
 {question}
 """
 
-    response = client.chat.completions.create(
-        model=CHAT_MODEL,
-        messages=[
-            {
-                "role": "system",
-                "content": "You are a cautious AI assistant for compliance policy review."
-            },
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
-        temperature=0.2,
-    )
-
-    return response.choices[0].message.content
+return get_chat_completion(
+    messages=[
+        {
+            "role": "system",
+            "content": "You are a cautious AI assistant for compliance policy review."
+        },
+        {
+            "role": "user",
+            "content": prompt
+        }
+    ]
+)
 
 
 def main() -> None:
