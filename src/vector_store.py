@@ -15,17 +15,6 @@ EMBEDDING_MODEL = "text-embedding-3-small"
 
 load_dotenv()
 
-def get_embedding(text: str) -> List[float]:
-    """
-    Generate an embedding vector for a text string.
-    """
-    response = openai_client.embeddings.create(
-        model=EMBEDDING_MODEL,
-        input=text,
-    )
-
-    return response.data[0].embedding
-
 
 def get_collection():
     """

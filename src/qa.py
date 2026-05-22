@@ -44,11 +44,11 @@ User Question:
 {question}
 """
 
-return get_chat_completion(
-    messages=[
+    return get_chat_completion(
+        messages=[
         {
-            "role": "system",
-            "content": "You are a cautious AI assistant for compliance policy review."
+                "role": "system",
+                "content": "You are a cautious AI assistant for compliance policy review."
         },
         {
             "role": "user",
