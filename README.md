@@ -104,12 +104,16 @@ The system is designed as a modular AI workflow platform:
 
 ## Roadmap
 
-- [ ] Document ingestion pipeline
-- [ ] RAG-based policy Q&A
-- [ ] Case analysis workflow
-- [ ] Human review interface
-- [ ] Audit logging system
+- [x] Document ingestion pipeline
+- [x] RAG-based policy Q&A
+- [x] Case analysis workflow
+- [x] Human review interface
+- [x] Audit logging system
 - [ ] Evaluation and monitoring framework
+- [ ] Streamlit workflow refinements
+- [ ] Structured JSON outputs
+- [ ] Prompt/version tracking
+- [ ] Role-based review workflows
 
 ---
 
