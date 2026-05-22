@@ -92,7 +92,7 @@ The system is designed as a modular AI workflow platform:
 
 ---
 
-## Tech Stack (Planned)
+## Tech Stack
 
 - Python
 - LLM APIs (OpenAI / Anthropic)
