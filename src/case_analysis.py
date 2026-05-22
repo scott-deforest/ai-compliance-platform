@@ -2,6 +2,7 @@ from typing import List, Dict
 
 from vector_store import search_policy_documents
 from llm import get_chat_completion
+from audit import initialize_database, log_interaction
 
 
 def format_context(matches: List[Dict]) -> str:
@@ -77,6 +78,8 @@ Case Scenario:
 
 
 def main() -> None:
+    initialize_database()
+
     print("Enter compliance case scenario:")
     print("-" * 80)
 
@@ -87,6 +90,24 @@ def main() -> None:
     print("\nCase Analysis")
     print("=" * 80)
     print(result)
+
+    print("\nHuman Review")
+    print("=" * 80)
+
+    human_decision = input(
+        "Final Decision (Accept / Escalate / Reject / Needs More Review): "
+    )
+
+    reviewer_notes = input("Reviewer Notes: ")
+
+    log_interaction(
+        workflow_type="case_analysis",
+        user_input=case_text,
+        ai_output=result,
+        human_decision=human_decision,
+        reviewer_notes=reviewer_notes,
+    )
+    print("\nAudit log saved.")
 
 
 if __name__ == "__main__":
