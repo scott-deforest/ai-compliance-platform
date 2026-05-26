@@ -31,6 +31,15 @@ def initialize_database():
     conn.close()
 
 
+def get_audit_log():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, timestamp, workflow_type, user_input, ai_output, human_decision, reviewer_notes FROM audit_log ORDER BY id DESC")
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
+
 def log_interaction(
     workflow_type: str,
     user_input: str,

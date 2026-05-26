@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 from vector_store import search_policy_documents
 from llm import get_chat_completion
+from audit import initialize_database, log_interaction
 
 
 load_dotenv()
@@ -36,6 +37,7 @@ Rules:
 - Cite sources using the provided Source numbers.
 - Clearly state any limitations.
 - Do not make final compliance decisions.
+- Confidence should usually be Low or Medium unless the policy context directly and fully supports the recommendation.
 
 Policy Context:
 {context}
@@ -44,18 +46,28 @@ User Question:
 {question}
 """
 
-    return get_chat_completion(
+    answer = get_chat_completion(
         messages=[
-        {
+            {
                 "role": "system",
                 "content": "You are a cautious AI assistant for compliance policy review."
-        },
-        {
-            "role": "user",
-            "content": prompt
-        }
-    ]
-)
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    )
+    initialize_database()
+    log_interaction(
+        workflow_type="policy_qa",
+        user_input=question,
+        ai_output=answer,
+        human_decision="N/A",
+        reviewer_notes="",
+    )
+
+    return answer
 
 
 def main() -> None:

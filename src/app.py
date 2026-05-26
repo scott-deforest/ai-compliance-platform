@@ -2,7 +2,7 @@ import streamlit as st
 
 from qa import answer_policy_question
 from case_analysis import analyze_case
-from audit import initialize_database, log_interaction
+from audit import initialize_database, log_interaction, get_audit_log
 
 
 st.set_page_config(
@@ -19,7 +19,7 @@ st.caption(
     "with grounded retrieval, human review, and audit logging."
 )
 
-tab_qa, tab_case = st.tabs(["Policy Q&A", "Case Analysis"])
+tab_qa, tab_case, tab_audit = st.tabs(["Policy Q&A", "Case Analysis", "Audit Log"])
 
 with tab_qa:
     st.header("Policy Q&A")
@@ -89,3 +89,27 @@ with tab_case:
             )
 
             st.success("Review saved to audit log.")
+
+with tab_audit:
+    st.header("Audit Log")
+    st.write("All logged interactions — policy Q&A and case analysis decisions.")
+
+    if st.button("Refresh"):
+        st.rerun()
+
+    rows = get_audit_log()
+
+    if not rows:
+        st.info("No interactions logged yet.")
+    else:
+        for row in rows:
+            id_, timestamp, workflow_type, user_input, ai_output, human_decision, reviewer_notes = row
+            label = f"#{id_} | {timestamp[:19]} | {workflow_type} | Decision: {human_decision}"
+            with st.expander(label):
+                st.markdown("**User Input**")
+                st.write(user_input)
+                st.markdown("**AI Output**")
+                st.write(ai_output)
+                if reviewer_notes:
+                    st.markdown("**Reviewer Notes**")
+                    st.write(reviewer_notes)
