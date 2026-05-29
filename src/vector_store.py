@@ -56,7 +56,7 @@ def index_policy_documents() -> None:
     print(f"Indexed {len(chunks)} chunk(s) into ChromaDB.")
 
 
-def search_policy_documents(query: str, n_results: int = 3) -> List[Dict]:
+def search_policy_documents(query: str, n_results: int = 6) -> List[Dict]:
     """
     Search ChromaDB for policy chunks relevant to the query.
     """
