@@ -43,11 +43,14 @@ def index_policy_documents() -> None:
             documents=[chunk["text"]],
             embeddings=[embedding],
             metadatas=[
-                {
-                    "document_name": chunk["document_name"],
-                    "source_path": chunk["source_path"],
-                }
-            ],
+    {
+             "document_name": chunk["document_name"],
+             "source_path": chunk["source_path"],
+             "relative_path": chunk["relative_path"],
+             "section": chunk["section"],
+             "file_type": chunk["file_type"],
+    }
+],
         )
 
     print(f"Indexed {len(chunks)} chunk(s) into ChromaDB.")

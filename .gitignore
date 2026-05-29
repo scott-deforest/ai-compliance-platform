@@ -224,3 +224,4 @@ __pycache__/
 chroma_db/
 .DS_Store
 *.db
+data/policies/**/*.pdf

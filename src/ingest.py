@@ -1,29 +1,64 @@
 from pathlib import Path
 from typing import List, Dict
 
+from pypdf import PdfReader
+
 
 POLICY_DIR = Path("data/policies")
 
 
+def extract_text_from_pdf(file_path: Path) -> str:
+    """
+    Extract text from a PDF file.
+    """
+    reader = PdfReader(str(file_path))
+    pages = []
+
+    for page_number, page in enumerate(reader.pages, start=1):
+        page_text = page.extract_text() or ""
+
+        if page_text.strip():
+            pages.append(f"\n\n--- Page {page_number} ---\n\n{page_text}")
+
+    return "\n".join(pages)
+
+
 def load_documents(policy_dir: Path = POLICY_DIR) -> List[Dict[str, str]]:
     """
-    Load markdown and text policy documents from the policy directory.
+    Recursively load markdown, text, and PDF policy documents.
     """
     documents = []
 
     if not policy_dir.exists():
         raise FileNotFoundError(f"Policy directory not found: {policy_dir}")
 
-    for file_path in policy_dir.glob("*"):
-        if file_path.suffix.lower() not in [".md", ".txt"]:
+    for file_path in policy_dir.rglob("*"):
+        if not file_path.is_file():
             continue
 
-        text = file_path.read_text(encoding="utf-8")
+        suffix = file_path.suffix.lower()
+
+        if suffix not in [".md", ".txt", ".pdf"]:
+            continue
+
+        if suffix == ".pdf":
+            text = extract_text_from_pdf(file_path)
+        else:
+            text = file_path.read_text(encoding="utf-8")
+
+        if not text.strip():
+            continue
+
+        relative_path = file_path.relative_to(policy_dir)
+        section = relative_path.parent.as_posix()
 
         documents.append(
             {
                 "document_name": file_path.name,
                 "path": str(file_path),
+                "relative_path": str(relative_path),
+                "section": section,
+                "file_type": suffix.replace(".", ""),
                 "text": text,
             }
         )
@@ -31,10 +66,10 @@ def load_documents(policy_dir: Path = POLICY_DIR) -> List[Dict[str, str]]:
     return documents
 
 
-def chunk_text(text: str, chunk_size: int = 500, overlap: int = 100) -> List[str]:
+def chunk_text(text: str, chunk_size: int = 1200, overlap: int = 200) -> List[str]:
     """
     Split text into overlapping chunks.
-    This is intentionally simple for MVP purposes.
+    Larger chunks work better for regulatory documents than the initial MVP size.
     """
     if chunk_size <= overlap:
         raise ValueError("chunk_size must be greater than overlap")
@@ -63,12 +98,17 @@ def create_chunks(documents: List[Dict[str, str]]) -> List[Dict[str, str]]:
     for document in documents:
         chunks = chunk_text(document["text"])
 
+        safe_doc_name = document["relative_path"].replace("/", "_").replace(" ", "_")
+
         for index, chunk in enumerate(chunks, start=1):
             all_chunks.append(
                 {
-                    "chunk_id": f"{document['document_name']}_chunk_{index}",
+                    "chunk_id": f"{safe_doc_name}_chunk_{index}",
                     "document_name": document["document_name"],
                     "source_path": document["path"],
+                    "relative_path": document["relative_path"],
+                    "section": document["section"],
+                    "file_type": document["file_type"],
                     "text": chunk,
                 }
             )
@@ -84,12 +124,23 @@ def main() -> None:
     print(f"Created {len(chunks)} chunk(s)")
     print()
 
-    for chunk in chunks:
+    for document in documents:
         print("=" * 80)
-        print(f"Chunk ID: {chunk['chunk_id']}")
-        print(f"Document: {chunk['document_name']}")
+        print(f"Document: {document['document_name']}")
+        print(f"Section: {document['section']}")
+        print(f"Type: {document['file_type']}")
+        print(f"Path: {document['relative_path']}")
+
+    print()
+    print("Sample chunk:")
+    print("=" * 80)
+
+    if chunks:
+        print(f"Chunk ID: {chunks[0]['chunk_id']}")
+        print(f"Document: {chunks[0]['document_name']}")
+        print(f"Section: {chunks[0]['section']}")
         print()
-        print(chunk["text"])
+        print(chunks[0]["text"][:1500])
 
 
 if __name__ == "__main__":
