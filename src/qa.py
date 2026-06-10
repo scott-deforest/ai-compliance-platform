@@ -76,11 +76,21 @@ User Question:
 
 def main() -> None:
     question = input("Ask a policy question: ")
-    answer = answer_policy_question(question)
+    result = answer_policy_question_with_sources(question)
 
     print("\nAnswer:")
     print("=" * 80)
-    print(answer)
+    print(result["answer"])
+
+    print("\nRetrieved Sources:")
+    print("=" * 80)
+
+    for index, source in enumerate(result["sources"], start=1):
+        metadata = source["metadata"]
+        print(f"Source {index}: {metadata.get('document_name', 'Unknown document')}")
+        print(f"Section: {metadata.get('section', 'Unknown section')}")
+        print(f"Chunk ID: {source['id']}")
+        print("-" * 80)
 
 
 if __name__ == "__main__":
