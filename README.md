@@ -34,27 +34,49 @@ This platform introduces an AI-assisted workflow that:
 
 ---
 
-## Core Features (MVP)
+## Core Features
 
-### 1. Policy Q&A (RAG-Based)
-- Ask questions about policies and regulations
-- Retrieve relevant document sections
-- Generate answers with citations
+### 1. Regulatory Knowledge Search
 
-### 2. AI Risk Analysis
-- Input compliance scenarios or case data
-- Generate structured risk summaries, flags, and recommendations
+- Ask natural language questions about regulatory requirements
+- Semantic retrieval across FFIEC BSA/AML guidance
+- Grounded AI responses based on retrieved documents
+- Source traceability and document-level citations
+
+### 2. AI-Assisted Case Analysis
+
+- Submit compliance scenarios for review
+- AI-generated risk summaries and recommendations
+- Confidence and limitation reporting
+- Supporting source identification
 
 ### 3. Human-in-the-Loop Review
-- Analysts review, edit, or override AI outputs
-- Final decisions are explicitly captured
+
+- Human review remains required
+- Final decisions are recorded explicitly
+- AI serves as a decision-support tool rather than an authority
 
 ### 4. Audit Logging
-- All interactions are logged, including:
-  - User input
-  - Retrieved sources
-  - AI output
-  - Human decisions
+
+The platform captures:
+
+- User inputs
+- Retrieved source documents
+- AI-generated outputs
+- Human reviewer decisions
+- Reviewer notes
+- Timestamps
+
+### 5. Source Traceability
+
+Every recommendation can be traced back to:
+
+- Retrieved documents
+- Regulatory sections
+- Source paths
+- Supporting text chunks
+
+This enables explainability and auditability in regulated environments.
 
 ---
 
@@ -69,6 +91,18 @@ The system is designed as a modular AI workflow platform:
 - Audit logging and traceability layer
 
 (See `/docs/system-architecture.md` for details)
+
+---
+
+## Current Corpus
+
+The platform currently indexes and searches over:
+
+- 80+ FFIEC BSA/AML regulatory guidance documents
+- 1,000+ embedded document chunks
+- Multiple examination manual sections, appendices, and regulatory requirements
+
+The corpus is processed through a PDF ingestion pipeline, chunked, embedded, and indexed in ChromaDB for semantic retrieval.
 
 ---
 
@@ -95,10 +129,13 @@ The system is designed as a modular AI workflow platform:
 ## Tech Stack
 
 - Python
-- LLM APIs (OpenAI / Anthropic)
-- Vector store (ChromaDB)
-- SQLite (audit logging)
-- Streamlit (UI)
+- OpenAI API
+- ChromaDB (Vector Database)
+- SQLite (Audit Logging)
+- Streamlit (User Interface)
+- pypdf (Document Processing)
+- Retrieval-Augmented Generation (RAG)
+- FFIEC BSA/AML Regulatory Corpus (80+ Documents)
 
 ---
 
@@ -109,8 +146,10 @@ The system is designed as a modular AI workflow platform:
 - [x] Case analysis workflow
 - [x] Human review interface
 - [x] Audit logging system
+- [X] FFIEC PDF corpus ingestion
+- [X] Source traceability
+- [X] Streamlit workflow refinements
 - [ ] Evaluation and monitoring framework
-- [ ] Streamlit workflow refinements
 - [ ] Structured JSON outputs
 - [ ] Prompt/version tracking
 - [ ] Role-based review workflows
