@@ -1,7 +1,7 @@
 import streamlit as st
 
 from qa import answer_policy_question_with_sources
-from case_analysis import analyze_case
+from case_analysis import analyze_case, analyze_case_with_sources
 from audit import initialize_database, log_interaction, get_audit_log
 
 
@@ -92,35 +92,70 @@ with tab_case:
         else:
             with st.spinner("Analyzing case against policy context..."):
                 st.session_state["case_text"] = case_text
-                st.session_state["ai_output"] = analyze_case(case_text)
+                case_result = analyze_case_with_sources(case_text)
+                st.session_state["ai_output"] = case_result["analysis"]
+                st.session_state["case_sources"] = case_result["sources"]
 
     if "ai_output" in st.session_state:
         st.subheader("AI Case Analysis")
         st.write(st.session_state["ai_output"])
 
-        st.subheader("Human Review")
+        if "case_sources" in st.session_state:
+            st.subheader("Retrieved Sources")
 
-        human_decision = st.selectbox(
-            "Final Decision",
-            ["Accept", "Escalate", "Reject", "Needs More Review"],
-        )
+            for index, source in enumerate(st.session_state["case_sources"], start=1):
+                metadata = source["metadata"]
 
-        reviewer_notes = st.text_area(
-            "Reviewer Notes",
-            placeholder="Document rationale for the final decision...",
-            height=100,
-        )
+                document_name = metadata.get(
+                    "document_name",
+                    "Unknown document"
+                )
 
-        if st.button("Save Review to Audit Log"):
-            log_interaction(
-                workflow_type="case_analysis",
-                user_input=st.session_state["case_text"],
-                ai_output=st.session_state["ai_output"],
-                human_decision=human_decision,
-                reviewer_notes=reviewer_notes,
+                section = metadata.get(
+                    "section",
+                    "Unknown section"
+                )
+
+                relative_path = metadata.get(
+                    "relative_path",
+                    ""
+                )
+
+                with st.expander(f"Source {index}: {document_name}"):
+
+                    st.write(f"**Document:** {document_name}")
+                    st.write(f"**Section:** {section}")
+
+                    if relative_path:
+                        st.write(f"**Path:** {relative_path}")
+
+                    st.write(f"**Chunk ID:** {source['id']}")
+
+                st.text(source["document"][:1500])
+
+            st.subheader("Human Review")
+
+            human_decision = st.selectbox(
+                "Final Decision",
+                ["Accept", "Escalate", "Reject", "Needs More Review"],
             )
 
-            st.success("Review saved to audit log.")
+            reviewer_notes = st.text_area(
+                "Reviewer Notes",
+                placeholder="Document rationale for the final decision...",
+                height=100,
+            )
+
+            if st.button("Save Review to Audit Log"):
+                log_interaction(
+                    workflow_type="case_analysis",
+                    user_input=st.session_state["case_text"],
+                    ai_output=st.session_state["ai_output"],
+                    human_decision=human_decision,
+                    reviewer_notes=reviewer_notes,
+                )
+
+                st.success("Review saved to audit log.")
 
 with tab_audit:
     st.header("Audit Log")
