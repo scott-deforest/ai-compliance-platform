@@ -1,6 +1,6 @@
 import streamlit as st
 
-from qa import answer_policy_question
+from qa import answer_policy_question_with_sources
 from case_analysis import analyze_case
 from audit import initialize_database, log_interaction, get_audit_log
 
@@ -36,10 +36,42 @@ with tab_qa:
             st.warning("Please enter a policy question.")
         else:
             with st.spinner("Retrieving policy context and generating answer..."):
-                answer = answer_policy_question(question)
+                result = answer_policy_question_with_sources(question)
 
             st.subheader("AI Answer")
-            st.write(answer)
+            st.write(result["answer"])
+
+            st.subheader("Retrieved Sources")
+
+            for index, source in enumerate(result["sources"], start=1):
+                metadata = source["metadata"]
+
+                document_name = metadata.get(
+                    "document_name",
+                    "Unknown document"
+                )
+
+                section = metadata.get(
+                    "section",
+                    "Unknown section"
+                )
+
+                relative_path = metadata.get(
+                    "relative_path",
+                    ""
+                )
+
+                with st.expander(f"Source {index}: {document_name}"):
+
+                    st.write(f"**Document:** {document_name}")
+                    st.write(f"**Section:** {section}")
+
+                    if relative_path:
+                        st.write(f"**Path:** {relative_path}")
+
+                    st.write(f"**Chunk ID:** {source['id']}")
+
+                    st.text(source["document"][:1500])
 
 with tab_case:
     st.header("Compliance Case Analysis")

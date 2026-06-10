@@ -22,7 +22,7 @@ def format_context(matches: List[Dict]) -> str:
     return "\n\n".join(context_blocks)
 
 
-def answer_policy_question(question: str) -> str:
+def answer_policy_question_with_sources(question: str) -> dict:
     matches = search_policy_documents(question)
     context = format_context(matches)
 
@@ -58,6 +58,7 @@ User Question:
             }
         ]
     )
+
     initialize_database()
     log_interaction(
         workflow_type="policy_qa",
@@ -67,7 +68,10 @@ User Question:
         reviewer_notes="",
     )
 
-    return answer
+    return {
+        "answer": answer,
+        "sources": matches,
+    }
 
 
 def main() -> None:
