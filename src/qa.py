@@ -1,25 +1,11 @@
-from typing import List, Dict
-
 from dotenv import load_dotenv
 
-from vector_store import search_policy_documents
+from vector_store import search_policy_documents, format_context
 from llm import get_chat_completion
 from audit import initialize_database, log_interaction
 
 
 load_dotenv()
-
-
-def format_context(matches: List[Dict]) -> str:
-    context_blocks = []
-
-    for index, match in enumerate(matches, start=1):
-        source_label = f"Source {index}: {match['metadata']['document_name']} | {match['id']}"
-        context_blocks.append(
-            f"{source_label}\n{match['document']}"
-        )
-
-    return "\n\n".join(context_blocks)
 
 
 def answer_policy_question_with_sources(question: str) -> dict:

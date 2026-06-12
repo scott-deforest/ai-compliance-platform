@@ -56,6 +56,20 @@ def index_policy_documents() -> None:
     print(f"Indexed {len(chunks)} chunk(s) into ChromaDB.")
 
 
+def format_context(matches: List[Dict]) -> str:
+    """
+    Format retrieved chunks into a numbered, source-labeled context block
+    for grounding LLM prompts.
+    """
+    context_blocks = []
+
+    for index, match in enumerate(matches, start=1):
+        source_label = f"Source {index}: {match['metadata']['document_name']} | {match['id']}"
+        context_blocks.append(f"{source_label}\n{match['document']}")
+
+    return "\n\n".join(context_blocks)
+
+
 def search_policy_documents(query: str, n_results: int = 6) -> List[Dict]:
     """
     Search ChromaDB for policy chunks relevant to the query.

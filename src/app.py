@@ -131,7 +131,7 @@ with tab_case:
 
                     st.write(f"**Chunk ID:** {source['id']}")
 
-                st.text(source["document"][:1500])
+                    st.text(source["document"][:1500])
 
             st.subheader("Human Review")
 
