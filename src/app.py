@@ -1,7 +1,7 @@
 import streamlit as st
 
 from qa import answer_policy_question_with_sources
-from case_analysis import analyze_case, analyze_case_with_sources
+from case_analysis import analyze_case_with_sources
 from audit import initialize_database, log_interaction, get_audit_log
 
 
