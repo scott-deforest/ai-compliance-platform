@@ -80,6 +80,35 @@ This enables explainability and auditability in regulated environments.
 
 ---
 
+## Demo Highlights
+
+- Regulatory Q&A powered by Retrieval-Augmented Generation (RAG)
+- AI-assisted compliance case analysis
+- Human-in-the-loop review workflow
+- Full audit logging
+- Source traceability across FFIEC BSA/AML guidance
+
+---
+
+## Screenshots
+
+### Policy Q&A
+
+![Policy Q&A](docs/screenshots/policy_qa.png)
+The platform retrieves relevant FFIEC guidance and generates grounded responses with full source traceability.
+
+### AI-Assisted Case Analysis
+
+![Case Analysis](docs/screenshots/case_analysis.png)
+Compliance scenarios are analyzed against regulatory guidance, with identified risk factors, recommendations, confidence levels, and supporting sources.
+
+### Audit Log
+
+![Audit Log](docs/screenshots/audit_log.png)
+All interactions, AI outputs, human decisions, and reviewer notes are recorded to support governance and auditability.
+
+---
+
 ## Architecture (High-Level)
 
 The system is designed as a modular AI workflow platform:
