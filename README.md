@@ -197,9 +197,10 @@ This project is intended to demonstrate:
 
 ---
 
-## Author
+## License
 
-Scott DeForest  
-Product Manager – Platform, Data & AI Systems
+Copyright © 2026 Scott DeForest. All rights reserved.
 
----
+This repository is available for viewing and evaluation only. No permission is
+granted to copy, modify, distribute, deploy, or create derivative works without
+prior written permission. See [LICENSE](LICENSE) for details.
