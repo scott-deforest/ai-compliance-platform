@@ -28,7 +28,7 @@ Existing tools are often rule-based, rigid, and lack the flexibility to scale wi
 This platform introduces an AI-assisted workflow that:
 
 - Uses **retrieval-augmented generation (RAG)** to ground responses in policy documents
-- Provides **AI-generated risk analysis** for compliance scenarios
+- Provides **structured, schema-validated risk analysis** for compliance scenarios
 - Incorporates **human-in-the-loop review** to ensure responsible decision-making
 - Maintains a full **audit trail** of inputs, outputs, and decisions
 
@@ -46,9 +46,14 @@ This platform introduces an AI-assisted workflow that:
 ### 2. AI-Assisted Case Analysis
 
 - Submit compliance scenarios for review
-- AI-generated risk summaries and recommendations
-- Confidence and limitation reporting
-- Supporting source identification
+- Schema-validated structured AI outputs for:
+  - Summary
+  - Risk flags
+  - Recommended action
+  - Confidence
+  - Limitations
+- Supporting source retrieval remains separate from model-generated analysis
+- Structured results are serialized to JSON for audit logging
 
 ### 3. Human-in-the-Loop Review
 
@@ -116,6 +121,7 @@ The system is designed as a modular AI workflow platform:
 - Document ingestion and chunking
 - Vector-based retrieval for policy search
 - LLM-powered analysis layer
+- Schema validation and structured output handling
 - Human review workflow
 - Audit logging and traceability layer
 
@@ -139,9 +145,10 @@ The corpus is processed through a PDF ingestion pipeline, chunked, embedded, and
 
 1. A compliance analyst submits a case scenario
 2. The system retrieves relevant policy sections
-3. The AI generates a risk assessment and recommendation
-4. The analyst reviews and finalizes the decision
-5. The full interaction is logged for audit purposes
+3. The AI generates a schema-validated structured risk analysis
+4. The analyst reviews the recommendation and supporting evidence
+5. The final human decision is recorded
+6. The structured AI output and review data are logged for audit purposes
 
 ---
 
@@ -165,6 +172,7 @@ The corpus is processed through a PDF ingestion pipeline, chunked, embedded, and
 - pypdf (Document Processing)
 - Retrieval-Augmented Generation (RAG)
 - FFIEC BSA/AML Regulatory Corpus (80+ Documents)
+- Pydantic (Structured Output Validation)
 
 ---
 
@@ -175,11 +183,11 @@ The corpus is processed through a PDF ingestion pipeline, chunked, embedded, and
 - [x] Case analysis workflow
 - [x] Human review interface
 - [x] Audit logging system
-- [X] FFIEC PDF corpus ingestion
-- [X] Source traceability
-- [X] Streamlit workflow refinements
+- [x] FFIEC PDF corpus ingestion
+- [x] Source traceability
+- [x] Streamlit workflow refinements
+- [x] Structured JSON outputs
 - [ ] Evaluation and monitoring framework
-- [ ] Structured JSON outputs
 - [ ] Prompt/version tracking
 - [ ] Role-based review workflows
 
