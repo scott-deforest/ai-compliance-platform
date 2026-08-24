@@ -20,6 +20,17 @@ def get_chat_completion(messages, temperature=0.2):
     return response.choices[0].message.content
 
 
+def get_structured_chat_completion(messages, response_format, temperature=0.2):
+    response = client.beta.chat.completions.parse(
+        model=CHAT_MODEL,
+        messages=messages,
+        temperature=temperature,
+        response_format=response_format,
+    )
+
+    return response.choices[0].message.parsed
+
+
 def get_embedding(text: str):
     response = client.embeddings.create(
         model=EMBEDDING_MODEL,

@@ -1,6 +1,15 @@
 from vector_store import search_policy_documents, format_context
-from llm import get_chat_completion
+from llm import get_structured_chat_completion
 from audit import initialize_database, log_interaction
+from pydantic import BaseModel
+
+
+class CaseAnalysis(BaseModel):
+    summary: str
+    risk_flags: list[str]
+    recommended_action: str
+    confidence: str
+    limitations: list[str]
 
 
 def analyze_case_with_sources(case_text: str) -> dict:
@@ -20,27 +29,7 @@ Rules:
 - Cite supporting sources where appropriate
 - Confidence should usually be Low or Medium unless the policy context directly and fully supports the recommendation.
 
-Return your response using the following structure:
-
-Summary:
-<brief summary>
-
-Risk Flags:
-- flag 1
-- flag 2
-
-Recommended Action:
-<recommended next step>
-
-Supporting Sources:
-- Source X
-- Source Y
-
-Confidence:
-<Low / Medium / High>
-
-Limitations:
-<what information may be missing>
+Return a structured compliance analysis matching the required response schema.
 
 Policy Context:
 {context}
@@ -49,7 +38,7 @@ Case Scenario:
 {case_text}
 """
 
-    analysis = get_chat_completion(
+    analysis = get_structured_chat_completion(
         messages=[
             {
                 "role": "system",
@@ -59,7 +48,8 @@ Case Scenario:
                 "role": "user",
                 "content": prompt
             }
-        ]
+        ],
+        response_format=CaseAnalysis,
     )
 
     return {
@@ -67,9 +57,9 @@ Case Scenario:
         "sources": matches,
     }
 
+
 def main() -> None:
     initialize_database()
-
     print("Enter compliance case scenario:")
     print("-" * 80)
 
@@ -93,7 +83,7 @@ def main() -> None:
     log_interaction(
         workflow_type="case_analysis",
         user_input=case_text,
-        ai_output=result,
+        ai_output=result.model_dump_json(),
         human_decision=human_decision,
         reviewer_notes=reviewer_notes,
     )

@@ -98,7 +98,25 @@ with tab_case:
 
     if "ai_output" in st.session_state:
         st.subheader("AI Case Analysis")
-        st.write(st.session_state["ai_output"])
+
+        analysis = st.session_state["ai_output"]
+
+        st.markdown("**Summary**")
+        st.write(analysis.summary)
+
+        st.markdown("**Risk Flags**")
+        for flag in analysis.risk_flags:
+            st.write(f"- {flag}")
+
+        st.markdown("**Recommended Action**")
+        st.write(analysis.recommended_action)
+
+        st.markdown("**Confidence**")
+        st.write(analysis.confidence)
+
+        st.markdown("**Limitations**")
+        for limitation in analysis.limitations:
+            st.write(f"- {limitation}")
 
         if "case_sources" in st.session_state:
             st.subheader("Retrieved Sources")
@@ -150,7 +168,7 @@ with tab_case:
                 log_interaction(
                     workflow_type="case_analysis",
                     user_input=st.session_state["case_text"],
-                    ai_output=st.session_state["ai_output"],
+                    ai_output=st.session_state["ai_output"].model_dump_json(),
                     human_decision=human_decision,
                     reviewer_notes=reviewer_notes,
                 )
